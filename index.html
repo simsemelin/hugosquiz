@@ -769,7 +769,9 @@ const DEFAULT_QUIZ = {
   ]
 };
 
-let quizData = JSON.parse(localStorage.getItem('quizData') || 'null') || JSON.parse(JSON.stringify(DEFAULT_QUIZ));
+// Alltid använd frågorna från filen - rensa gammal cache
+localStorage.removeItem('quizData');
+let quizData = JSON.parse(JSON.stringify(DEFAULT_QUIZ));
 let scores = JSON.parse(localStorage.getItem('scores') || '{"hugo":null,"farmor":null}');
 
 let currentUser = 'hugo';
@@ -985,7 +987,7 @@ function loadAdminUI() {
 function saveSettings() {
   quizData.country = document.getElementById('admin-country').value;
   quizData.flag = document.getElementById('admin-flag').value;
-  localStorage.setItem('quizData', JSON.stringify(quizData));
+  // quizData sparas ej - frågorna styrs via filen
 }
 
 function renderQList() {
@@ -1020,7 +1022,7 @@ function addQuestion() {
   if (!q || !o1 || !o2 || !o3 || !o4) { alert('Fyll i alla fält!'); return; }
 
   quizData.questions.push({ question: q, options: [o1, o2, o3, o4], correct });
-  localStorage.setItem('quizData', JSON.stringify(quizData));
+  // quizData sparas ej - frågorna styrs via filen
 
   ['new-q','new-o1','new-o2','new-o3','new-o4'].forEach(id => document.getElementById(id).value = '');
   renderQList();
@@ -1029,14 +1031,14 @@ function addQuestion() {
 function removeQuestion(i) {
   if (!confirm('Ta bort fråga ' + (i + 1) + '?')) return;
   quizData.questions.splice(i, 1);
-  localStorage.setItem('quizData', JSON.stringify(quizData));
+  // quizData sparas ej - frågorna styrs via filen
   renderQList();
 }
 
 function clearAll() {
   if (!confirm('Rensa ALLA frågor?')) return;
   quizData.questions = [];
-  localStorage.setItem('quizData', JSON.stringify(quizData));
+  // quizData sparas ej - frågorna styrs via filen
   renderQList();
 }
 
@@ -1060,7 +1062,7 @@ function importFromClaude() {
     if (valid.length === 0) throw new Error('Inga giltiga frågor hittades');
 
     quizData.questions = [...quizData.questions, ...valid];
-    localStorage.setItem('quizData', JSON.stringify(quizData));
+    // quizData sparas ej - frågorna styrs via filen
     renderQList();
     document.getElementById('claude-json-input').value = '';
 
